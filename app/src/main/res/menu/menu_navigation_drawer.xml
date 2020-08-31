@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_navi"
+            android:icon="@drawable/ic_home_24dp"
+            android:title="Trang chủ">
+        </item>
+        <item
+            android:id="@+id/infor_navi"
+            android:icon="@drawable/ic_info_24dp"
+            android:title="Thông tin ứng dụng">
+        </item>
+        <item
+            android:id="@+id/settings_navi"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="Cài đặt">
+        </item>
+        <item android:title="Ngôn ngữ">
+            <menu>
+                <item android:title="Tiếng Anh">
+
+                </item>
+                <item android:title="Tiếng Việt">
+
+                </item>
+            </menu>
+        </item>
+    </group>
+    <item android:title="">
+        <menu>
+            <item android:id="@+id/logout_navi"
+                android:icon="@drawable/ic_input_24dp"
+                android:title="Đăng xuất">
+            </item>
+        </menu>
+    </item>
+</menu>
