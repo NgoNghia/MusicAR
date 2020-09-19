@@ -2,8 +2,9 @@ package mieubongcity.music.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class Model_PlayList {
+class Model_PlayList : Serializable{
     @SerializedName("idPlayList")
     @Expose
     var idPlayList: String? = null

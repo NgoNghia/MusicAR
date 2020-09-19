@@ -22,7 +22,7 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var lastView = 0
     private var mVisibleView = 5
     private var iLoadMore: ILoadMore? = null
-
+    private lateinit var iClick : ILoadMore
     public constructor(mListBaiHat: MutableList<Model_BaiHat>, mContext: Context) : super() {
         this.mListBaiHat = mListBaiHat
         this.mContext = mContext
@@ -82,10 +82,12 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((holder as ItemViewHoldel)).txt_tencasy.setText(mListBaiHat.get(position).caSy)
                 Picasso.get()
                     .load(mListBaiHat.get(position).hinhBaiHat)
-                    .placeholder(R.drawable.ic_play_for_work_black_24dp)
+                    .placeholder(R.drawable.ic_file_download_black_24dp)
                     .error(R.drawable.error)
                     .fit()
-                    .into(((holder as ItemViewHoldel)).img_baihat);
+                    .into((holder as ItemViewHoldel).img_baihat);
+//                (holder as ItemViewHoldel)
+
             }
         }
     }

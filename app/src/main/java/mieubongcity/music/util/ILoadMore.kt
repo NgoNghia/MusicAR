@@ -1,5 +1,7 @@
 package mieubongcity.music.util
 
+import mieubongcity.music.model.Model_PlayList
+
 interface ILoadMore {
-    public fun onLoadMore()
+     fun onClickPlayList(playList : Model_PlayList )
 }

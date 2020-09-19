@@ -14,8 +14,8 @@ class APIRetrofitConnect {
         @JvmStatic
         public fun getClient(url: String): Retrofit {
             var okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                .readTimeout(3000, TimeUnit.MILLISECONDS)
-                .writeTimeout(3000, TimeUnit.MILLISECONDS)
+                .readTimeout(10000, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .retryOnConnectionFailure(true)
                 .build()
             var gson: Gson = GsonBuilder().setLenient().create()

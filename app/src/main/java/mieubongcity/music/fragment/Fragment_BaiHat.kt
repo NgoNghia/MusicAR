@@ -22,7 +22,6 @@ class Fragment_BaiHat : Fragment() {
     private lateinit var adapterBaiHat: AdapterBaiHat
     private lateinit var mView: View
     private lateinit var mRecyclerView: RecyclerView
-    private var mListBanner: MutableList<Model_QuangCao> = mutableListOf()
     private var mListSong: MutableList<Model_BaiHat> = mutableListOf()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +38,7 @@ class Fragment_BaiHat : Fragment() {
 
     private fun getDataSong() {
         var iData = APIService.getDataService()
-        var call = iData.getDataSong()
+        var call = iData.getDataListSong()
         call.enqueue(object : Callback<List<Model_BaiHat>> {
             override fun onResponse(
                 call: Call<List<Model_BaiHat>>,

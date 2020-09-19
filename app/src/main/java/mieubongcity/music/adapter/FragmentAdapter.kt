@@ -11,16 +11,15 @@ class FragmentAdapter(fm: FragmentManager, behavior: Int) :
     private var mListFragment: MutableList<Fragment> = mutableListOf()
 
     private var mListTitle: Array<String> = arrayOf(
-        "Bài Hát", "Album",
-        "Thể Loại", "Chủ Đề", "Danh sách phát"
+        "Bài Hát", "Danh sách phát", "Thể Loại", "Album", "Chủ Đề"
     )
 
     init {
         mListFragment.add(Fragment_BaiHat())
-        mListFragment.add(Fragment_Album())
-        mListFragment.add(Fragment_TheLoai())
-        mListFragment.add(Fragment_ChuDe())
         mListFragment.add(Fragment_PlayList())
+        mListFragment.add(Fragment_TheLoai())
+        mListFragment.add(Fragment_Album())
+        mListFragment.add(Fragment_ChuDe())
     }
 
     override fun getCount(): Int {
