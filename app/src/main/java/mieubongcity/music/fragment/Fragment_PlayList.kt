@@ -17,13 +17,13 @@ import mieubongcity.music.acitivity.DanhSachPhatBaiHatActivity
 import mieubongcity.music.adapter.AdapterPlayList
 import mieubongcity.music.model.Model_PlayList
 import mieubongcity.music.util.APIService
-import mieubongcity.music.util.ILoadMore
+import mieubongcity.music.util.ItemClickPlayListListener
 import retrofit2.Call
 import retrofit2.Response
 
 class Fragment_PlayList : Fragment() {
     var activity: MainActivity? = null
-    private var iLoadMore : ILoadMore  ?= null
+    private var iLoadMore : ItemClickPlayListListener  ?= null
     private lateinit var mView: View
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPlayList: AdapterPlayList
@@ -50,7 +50,7 @@ class Fragment_PlayList : Fragment() {
     private fun getDataPlayList() {
         var getJson = APIService.getDataService()
         var iDataService = getJson.getDataPlayList()
-        iDataService.enqueue(object : retrofit2.Callback<List<Model_PlayList>>, ILoadMore {
+        iDataService.enqueue(object : retrofit2.Callback<List<Model_PlayList>>, ItemClickPlayListListener {
             override fun onResponse(
                 call: Call<List<Model_PlayList>>,
                 response: Response<List<Model_PlayList>>
@@ -66,7 +66,7 @@ class Fragment_PlayList : Fragment() {
 
             }
 
-            override fun onClickPlayList(playList: Model_PlayList) {
+            override fun onClick(playList: Model_PlayList) {
 //                var intent : Intent = Intent(activity, PlayListAbc::class.java)
 //                intent?.let {
 //                    activity?.startActivity(intent)
@@ -77,6 +77,7 @@ class Fragment_PlayList : Fragment() {
                     it.startActivity(intent)
                 }
             }
+
         })
     }
     override fun onAttach(context: Context) {

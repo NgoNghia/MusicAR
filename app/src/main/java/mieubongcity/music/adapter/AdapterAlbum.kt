@@ -10,14 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
 import mieubongcity.music.model.Model_Album
+import mieubongcity.music.util.ItemClickAlbumListener
 
 class AdapterAlbum : RecyclerView.Adapter<AdapterAlbum.ViewAlbum> {
     var mContext: Context? = null
     lateinit var mList: MutableList<Model_Album>
+    var iClick : ItemClickAlbumListener ? = null
 
-    constructor(mContext: Context?, mList: MutableList<Model_Album>) : super() {
+    constructor(mContext: Context?, mList: MutableList<Model_Album>, iClick : ItemClickAlbumListener) : super() {
         this.mContext = mContext
         this.mList = mList
+        this.iClick = iClick
     }
 
     public inner class ViewAlbum(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -42,6 +45,12 @@ class AdapterAlbum : RecyclerView.Adapter<AdapterAlbum.ViewAlbum> {
             .error(R.drawable.error)
             .placeholder(R.drawable.ic_file_download_black_24dp)
             .into(holder.imageView)
+        (holder as ViewAlbum).itemView.setOnClickListener {
+            iClick?.let {
+                var album = mList.get(position)
+                iClick!!.onClick(album)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

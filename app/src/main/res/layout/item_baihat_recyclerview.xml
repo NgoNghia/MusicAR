@@ -20,9 +20,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:maxWidth="220dp"
+                    android:maxWidth="250dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:autoSizeTextType="uniform"
                     android:id="@+id/txt_tenbaihat"
                     android:layout_marginTop="2dp"

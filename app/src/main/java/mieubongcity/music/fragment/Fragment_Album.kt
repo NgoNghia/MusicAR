@@ -1,6 +1,7 @@
 package mieubongcity.music.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import mieubongcity.music.R
+import mieubongcity.music.acitivity.DanhSachPhatBaiHatActivity
 import mieubongcity.music.acitivity.MainActivity
 import mieubongcity.music.adapter.AdapterAlbum
 import mieubongcity.music.model.Model_Album
 import mieubongcity.music.util.APIService
+import mieubongcity.music.util.ItemClickAlbumListener
 import retrofit2.Call
 import retrofit2.Response
 
-class Fragment_Album : Fragment() {
+class Fragment_Album : Fragment(),ItemClickAlbumListener {
     var activity: MainActivity? = null
     private lateinit var mView: View
     private lateinit var recyclerView: RecyclerView
@@ -32,6 +35,7 @@ class Fragment_Album : Fragment() {
         recyclerView = mView.findViewById(R.id.rc_album)
         var layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = layoutManager
+
         getDataAlbum()
         return mView
     }
@@ -45,7 +49,7 @@ class Fragment_Album : Fragment() {
                 response: Response<List<Model_Album>>
             ) {
                 mList = response.body() as MutableList<Model_Album>
-                adapterAlbum = AdapterAlbum(activity, mList)
+                adapterAlbum = AdapterAlbum(activity, mList, this@Fragment_Album)
                 recyclerView.adapter = adapterAlbum
             }
 
@@ -58,5 +62,13 @@ class Fragment_Album : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.activity = context as MainActivity
+    }
+
+    override fun onClick(alum: Model_Album) {
+        activity?.let {
+            var intent = Intent(it, DanhSachPhatBaiHatActivity::class.java)
+            intent.putExtra("album", alum)
+            it.startActivity(intent)
+        }
     }
 }

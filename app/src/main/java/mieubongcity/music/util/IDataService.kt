@@ -26,5 +26,15 @@ public interface IDataService {
     @FormUrlEncoded
     @POST("danhsachbaihatplaylist.php")
     fun getDataBaiHatTheoPlayList(@Field("idPlayList") id: String)
-            : Call<List<Model_DanhSachPhatBaiHat>>
+            : Call<List<Model_BaiHat>>
+
+    @FormUrlEncoded
+    @POST("danhsachbaihatplaylist.php")
+    fun getDataBaiHatTheAblum(@Field("idAlbum") id: String)
+            : Call<List<Model_BaiHat>>
+
+    @FormUrlEncoded
+    @POST("danhsachbaihatplaylist.php")
+    fun getDataBaiHatTheoTheLoai(@Field("idTheLoai") id: String)
+            : Call<List<Model_BaiHat>>
 }

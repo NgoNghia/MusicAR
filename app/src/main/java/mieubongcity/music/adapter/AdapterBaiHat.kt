@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
 import mieubongcity.music.model.Model_BaiHat
-import mieubongcity.music.util.ILoadMore
+import mieubongcity.music.util.ItemClickPlayListListener
 
 class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var mListBaiHat: MutableList<Model_BaiHat>
@@ -21,8 +21,8 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var totalView = 0
     private var lastView = 0
     private var mVisibleView = 5
-    private var iLoadMore: ILoadMore? = null
-    private lateinit var iClick : ILoadMore
+//    private var iLoadMore: ItemClickListener? = null
+    private lateinit var iClick : ItemClickPlayListListener
     public constructor(mListBaiHat: MutableList<Model_BaiHat>, mContext: Context) : super() {
         this.mListBaiHat = mListBaiHat
         this.mContext = mContext

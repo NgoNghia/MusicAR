@@ -2,19 +2,18 @@ package mieubongcity.music.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
-import mieubongcity.music.model.Model_DanhSachPhatBaiHat
+import mieubongcity.music.model.Model_BaiHat
 
 class AdapterDanhSachPhatBaiHat : RecyclerView.Adapter<AdapterBaiHat.ItemViewHoldel> {
 
-    lateinit var mList: MutableList<Model_DanhSachPhatBaiHat>
+    lateinit var mList: MutableList<Model_BaiHat>
     lateinit var context: Context
 
-    constructor(mList: MutableList<Model_DanhSachPhatBaiHat>, context: Context) : super() {
+    constructor(mList: MutableList<Model_BaiHat>, context: Context) : super() {
         this.mList = mList
         this.context = context
     }

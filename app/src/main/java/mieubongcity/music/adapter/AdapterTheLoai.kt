@@ -10,17 +10,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
 import mieubongcity.music.model.Model_TheLoai
+import mieubongcity.music.util.ItemClickTheLoaiListener
 
 class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
 
     var mContext: Context? = null
     lateinit var mList: MutableList<Model_TheLoai>
-
-    constructor(mContext: Context?, mList: MutableList<Model_TheLoai>?) : super() {
+    var iClick : ItemClickTheLoaiListener ? =null
+    constructor(mContext: Context?, mList: MutableList<Model_TheLoai>?,
+                iClick : ItemClickTheLoaiListener ?) : super() {
         this.mContext = mContext
         if (mList != null) {
             this.mList = mList
         }
+        this.iClick = iClick
     }
 
     class ViewTheLoai(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +35,7 @@ class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
         var view = LayoutInflater.from(mContext).inflate(
             R.layout.item_theloai_recyclerview,
             parent, false
-        );
+        )
         return ViewTheLoai(view)
     }
 
@@ -43,6 +46,12 @@ class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
             .error(R.drawable.error)
             .placeholder(R.drawable.ic_file_download_black_24dp)
             .into(holder.imageView)
+        holder.itemView.setOnClickListener {
+            iClick?.let {
+                var theloai = mList.get(position)
+                it.onClick(theloai)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

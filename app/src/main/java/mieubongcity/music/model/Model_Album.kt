@@ -3,9 +3,10 @@ package mieubongcity.music.model
 import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
-class Model_Album {
+class Model_Album : Serializable{
     @SerializedName("idAlbum")
     @Expose
     var idAlbum: String? = null

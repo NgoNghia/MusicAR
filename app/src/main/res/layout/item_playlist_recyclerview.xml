@@ -7,7 +7,7 @@
     android:id="@+id/card_playlist"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
-    android:layout_margin="3dp"
+    android:layout_margin="4dp"
     android:theme="@style/Theme.MaterialComponents.Light"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <LinearLayout
@@ -22,7 +22,7 @@
                 android:layout_height="200dp">
             </ImageView>
             <TextView
-                android:padding="7dp"
+                android:padding="5dp"
                 android:textColor="@android:color/black"
                 android:gravity="center|center_horizontal"
                 android:textSize="17sp"

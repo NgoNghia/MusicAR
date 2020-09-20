@@ -58,7 +58,6 @@
             android:id="@+id/rc_playlist_runsong"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.core.widget.NestedScrollView>
 
