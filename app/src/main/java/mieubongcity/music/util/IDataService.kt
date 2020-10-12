@@ -30,11 +30,17 @@ public interface IDataService {
 
     @FormUrlEncoded
     @POST("danhsachbaihatplaylist.php")
-    fun getDataBaiHatTheAblum(@Field("idAlbum") id: String)
+    fun getDataBaiHatTheoAblum(@Field("idAlbum") id: String)
             : Call<List<Model_BaiHat>>
 
     @FormUrlEncoded
     @POST("danhsachbaihatplaylist.php")
     fun getDataBaiHatTheoTheLoai(@Field("idTheLoai") id: String)
             : Call<List<Model_BaiHat>>
+
+    @FormUrlEncoded
+    @POST("updateluotthich.php")
+    fun updateLuotThich(@Field("idbaihat") idbaihat : String,
+    @Field("luotthich") luotthich : String) :Call<String>
+
 }

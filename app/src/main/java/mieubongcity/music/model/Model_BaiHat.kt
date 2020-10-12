@@ -38,5 +38,5 @@ class Model_BaiHat {
 
     @SerializedName("luotThich")
     @Expose
-    var luotThich: String? = null
+    var luotThich: Int? = null
 }

@@ -1,8 +1,9 @@
 package mieubongcity.music.fragment
 
-import android.content.Context
+
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +16,19 @@ import mieubongcity.music.acitivity.DanhSachPhatBaiHatActivity
 import mieubongcity.music.acitivity.MainActivity
 import mieubongcity.music.adapter.AdapterAlbum
 import mieubongcity.music.model.Model_Album
+import mieubongcity.music.model.Model_PlayList
 import mieubongcity.music.util.APIService
 import mieubongcity.music.util.ItemClickAlbumListener
 import retrofit2.Call
 import retrofit2.Response
 
+
 class Fragment_Album : Fragment(),ItemClickAlbumListener {
-    var activity: MainActivity? = null
     private lateinit var mView: View
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterAlbum : AdapterAlbum
     private var mList = mutableListOf<Model_Album>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,26 +52,25 @@ class Fragment_Album : Fragment(),ItemClickAlbumListener {
                 response: Response<List<Model_Album>>
             ) {
                 mList = response.body() as MutableList<Model_Album>
-                adapterAlbum = AdapterAlbum(activity, mList, this@Fragment_Album)
+                adapterAlbum = AdapterAlbum( mList, this@Fragment_Album)
                 recyclerView.adapter = adapterAlbum
             }
 
             override fun onFailure(call: Call<List<Model_Album>>, t: Throwable) {
-                Toast.makeText(activity, t.message.toString(), Toast.LENGTH_SHORT).show()
+                Log.d("error", t.message.toString())
             }
         })
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        this.activity = context as MainActivity
-    }
-
-    override fun onClick(alum: Model_Album) {
+    override fun onClick(album: Model_Album) {
+        if(album!=null){
+            Toast.makeText(activity, album.tenAlbum, Toast.LENGTH_SHORT).show()
+        }
         activity?.let {
             var intent = Intent(it, DanhSachPhatBaiHatActivity::class.java)
-            intent.putExtra("album", alum)
+            intent.putExtra("album", album)
             it.startActivity(intent)
         }
     }
+
 }

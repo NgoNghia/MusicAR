@@ -1,6 +1,5 @@
 package mieubongcity.music.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,28 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
 import mieubongcity.music.model.Model_BaiHat
-import mieubongcity.music.util.ItemClickPlayListListener
+import mieubongcity.music.util.OnClick
 
-class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private var mListBaiHat: MutableList<Model_BaiHat>
-    private var mContext: Context
-    private var VIEW_RANDOM = 0;
-    private var VIEW_ITEM = 1;
+class AdapterBaiHat(
+    private var mListBaiHat: List<Model_BaiHat>,
+    private var iClick: OnClick
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var VIEW_ITEM = 1
     private var VIEW_LOADING = 2
+
     private var isLoading: Boolean = false
     private var totalView = 0
     private var lastView = 0
     private var mVisibleView = 5
-//    private var iLoadMore: ItemClickListener? = null
-    private lateinit var iClick : ItemClickPlayListListener
-    public constructor(mListBaiHat: MutableList<Model_BaiHat>, mContext: Context) : super() {
-        this.mListBaiHat = mListBaiHat
-        this.mContext = mContext
-    }
-
-    public class RandomViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var btn_random = itemView.findViewById<Button>(R.id.btn_random)
-    }
 
     public class LoadingViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var progressBar = itemView.findViewById<ProgressBar>(R.id.progressbar)
@@ -47,24 +37,16 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         var view: View
         var layoutInflater = LayoutInflater.from(parent?.context)
         when (viewType) {
-            VIEW_RANDOM -> {
-                view = LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_random_recyclerview, parent, false);
-//                view = layoutInflater.inflate(R.layout.item_random_recyclerview, parent, false)
-                return RandomViewHoldel(view)
-            }
+
             VIEW_ITEM -> {
-                view = LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_baihat_recyclerview, parent, false);
+                view = layoutInflater.inflate(R.layout.item_baihat_recyclerview, parent, false);
                 return ItemViewHoldel(view)
             }
             VIEW_LOADING -> {
-                view = LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_loading_recyclerview, parent, false);
+                view = layoutInflater.inflate(R.layout.item_loading_recyclerview, parent, false);
                 return LoadingViewHoldel(view)
             }
         }
-
         return null!!
     }
 
@@ -72,12 +54,7 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         when (holder) {
             is LoadingViewHoldel -> ((holder as LoadingViewHoldel)).progressBar.isIndeterminate =
                 true
-            is RandomViewHoldel -> {
-                ((holder as RandomViewHoldel)).btn_random.setOnClickListener {
-                    Toast.makeText(mContext, "Random", Toast.LENGTH_SHORT).show()
-                }
-            }
-            is ItemViewHoldel ->{
+            is ItemViewHoldel -> {
                 ((holder as ItemViewHoldel)).txt_tenbaihat.setText(mListBaiHat.get(position).tenBaiHat)
                 ((holder as ItemViewHoldel)).txt_tencasy.setText(mListBaiHat.get(position).caSy)
                 Picasso.get()
@@ -85,9 +62,17 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .placeholder(R.drawable.ic_file_download_black_24dp)
                     .error(R.drawable.error)
                     .fit()
-                    .into((holder as ItemViewHoldel).img_baihat);
-//                (holder as ItemViewHoldel)
-
+                    .into((holder as ItemViewHoldel).img_baihat)
+                (holder as ItemViewHoldel).image_morebahat.setOnClickListener {
+                    iClick?.let {
+                        iClick!!.clickImageViewMore(position)
+                    }
+                }
+                (holder as ItemViewHoldel).itemView.setOnClickListener {
+                    iClick?.let {
+                        iClick!!.clickItem(position)
+                    }
+                }
             }
         }
     }
@@ -100,11 +85,11 @@ class AdapterBaiHat : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0)
-            return VIEW_RANDOM
-        else if (mListBaiHat.get(position) == null)
-            return VIEW_LOADING
-        return VIEW_ITEM
+        var i = when {
+            mListBaiHat.get(position) == null -> VIEW_LOADING
+            else -> VIEW_ITEM
+        }
+        return i
 //        return mList?.size ?: 0
     }
 }

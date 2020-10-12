@@ -23,7 +23,8 @@ import retrofit2.Response
 
 class Fragment_PlayList : Fragment() {
     var activity: MainActivity? = null
-    private var iLoadMore : ItemClickPlayListListener  ?= null
+
+    //    private var iLoadMore : ItemClickPlayListListener  = this
     private lateinit var mView: View
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPlayList: AdapterPlayList
@@ -35,7 +36,7 @@ class Fragment_PlayList : Fragment() {
     ): View? {
         mView = inflater.inflate(R.layout.fragment_playlist, container, false)
         recyclerView = mView.findViewById(R.id.rc_playlist)
-        var layoutManager  = GridLayoutManager(activity, 2)
+        var layoutManager = GridLayoutManager(activity, 2)
         recyclerView.layoutManager = layoutManager
         getDataPlayList()
         iClickItem()
@@ -50,13 +51,14 @@ class Fragment_PlayList : Fragment() {
     private fun getDataPlayList() {
         var getJson = APIService.getDataService()
         var iDataService = getJson.getDataPlayList()
-        iDataService.enqueue(object : retrofit2.Callback<List<Model_PlayList>>, ItemClickPlayListListener {
+        iDataService.enqueue(object : retrofit2.Callback<List<Model_PlayList>>,
+            ItemClickPlayListListener {
             override fun onResponse(
                 call: Call<List<Model_PlayList>>,
                 response: Response<List<Model_PlayList>>
             ) {
                 mList = response.body() as MutableList<Model_PlayList>
-                adapterPlayList = AdapterPlayList(mList, activity!!, this)
+                adapterPlayList = AdapterPlayList(mList,  this)
                 recyclerView.adapter = adapterPlayList
             }
 
@@ -67,19 +69,15 @@ class Fragment_PlayList : Fragment() {
             }
 
             override fun onClick(playList: Model_PlayList) {
-//                var intent : Intent = Intent(activity, PlayListAbc::class.java)
-//                intent?.let {
-//                    activity?.startActivity(intent)
-//                }
                 activity?.let {
                     var intent = Intent(it, DanhSachPhatBaiHatActivity::class.java)
                     intent.putExtra("playList", playList)
                     it.startActivity(intent)
                 }
             }
-
         })
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.activity = context as MainActivity

@@ -12,10 +12,10 @@ class APIRetrofitConnect {
 
     companion object {
         @JvmStatic
-        public fun getClient(url: String): Retrofit {
+         fun getClient(url: String): Retrofit {
             var okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                .readTimeout(10000, TimeUnit.MILLISECONDS)
-                .writeTimeout(10000, TimeUnit.MILLISECONDS)
+                .readTimeout(2000, TimeUnit.MILLISECONDS)
+                .writeTimeout(2000, TimeUnit.MILLISECONDS)
                 .retryOnConnectionFailure(true)
                 .build()
             var gson: Gson = GsonBuilder().setLenient().create()

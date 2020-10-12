@@ -12,19 +12,22 @@ import mieubongcity.music.R
 import mieubongcity.music.model.Model_TheLoai
 import mieubongcity.music.util.ItemClickTheLoaiListener
 
-class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
+class AdapterTheLoai(
+    private var mList: MutableList<Model_TheLoai>,
+    private var iClick: ItemClickTheLoaiListener
+) : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai>() {
 
-    var mContext: Context? = null
-    lateinit var mList: MutableList<Model_TheLoai>
-    var iClick : ItemClickTheLoaiListener ? =null
-    constructor(mContext: Context?, mList: MutableList<Model_TheLoai>?,
-                iClick : ItemClickTheLoaiListener ?) : super() {
-        this.mContext = mContext
-        if (mList != null) {
-            this.mList = mList
-        }
-        this.iClick = iClick
-    }
+//    var mContext: Context? = null
+//    lateinit var mList: MutableList<Model_TheLoai>
+//    var iClick : ItemClickTheLoaiListener ? =null
+//    constructor(mContext: Context?, mList: MutableList<Model_TheLoai>?,
+//                iClick : ItemClickTheLoaiListener ?) : super() {
+//        this.mContext = mContext
+//        if (mList != null) {
+//            this.mList = mList
+//        }
+//        this.iClick = iClick
+//    }
 
     class ViewTheLoai(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView = itemView.findViewById<ImageView>(R.id.image_theloai)
@@ -32,7 +35,7 @@ class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewTheLoai {
-        var view = LayoutInflater.from(mContext).inflate(
+        var view = LayoutInflater.from(parent?.context).inflate(
             R.layout.item_theloai_recyclerview,
             parent, false
         )
@@ -48,8 +51,8 @@ class AdapterTheLoai : RecyclerView.Adapter<AdapterTheLoai.ViewTheLoai> {
             .into(holder.imageView)
         holder.itemView.setOnClickListener {
             iClick?.let {
-                var theloai = mList.get(position)
-                it.onClick(theloai)
+//                var theloai = mList.get(position)
+                it.onClick(mList.get(position))
             }
         }
     }

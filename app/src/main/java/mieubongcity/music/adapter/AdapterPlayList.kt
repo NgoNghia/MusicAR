@@ -12,22 +12,25 @@ import mieubongcity.music.R
 import mieubongcity.music.model.Model_PlayList
 import mieubongcity.music.util.ItemClickPlayListListener
 
-class AdapterPlayList : RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class AdapterPlayList(
+    private var mList: MutableList<Model_PlayList>,
+    private var iClick: ItemClickPlayListListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    lateinit var mList: MutableList<Model_PlayList>
-    var mContext: Context
-    private var iClick: ItemClickPlayListListener? = null
-
-    constructor(
-        mList: MutableList<Model_PlayList>?, mContext: Context,
-        iClick: ItemClickPlayListListener
-    ) : super() {
-        if (mList != null) {
-            this.mList = mList
-        }
-        this.mContext = mContext
-        this.iClick = iClick
-    }
+//    lateinit var mList: MutableList<Model_PlayList>
+//    var mContext: Context
+//    private var iClick: ItemClickPlayListListener? = null
+//
+//    constructor(
+//        mList: MutableList<Model_PlayList>?, mContext: Context,
+//        iClick: ItemClickPlayListListener
+//    ) : super() {
+//        if (mList != null) {
+//            this.mList = mList
+//        }
+//        this.mContext = mContext
+//        this.iClick = iClick
+//    }
 
     inner class MyItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //        var cardView = itemView.findViewById<CardView>(R.id.card_playlist)
@@ -36,7 +39,7 @@ class AdapterPlayList : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var view: View = LayoutInflater.from(mContext).inflate(
+        var view: View = LayoutInflater.from(parent?.context).inflate(
             R.layout.item_playlist_recyclerview,
             parent, false
         )
@@ -53,20 +56,10 @@ class AdapterPlayList : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             .into((holder as MyItemView).image_playlist)
         (holder as MyItemView).itemView.setOnClickListener {
             iClick?.let {
-                var playlist = mList.get(position)
-                it.onClick(playlist)
+//                var playlist = mList.get(position)
+                it.onClick(mList.get(position))
             }
         }
-
-//        iClick?.let {
-//            (holder as MyItemView).itemView.setOnClickListener {
-//                var playlist = mList.get(position)
-//                playlist?.let {iClick!!.onClick(playlist)
-//                }
-//            }
-//        }
-        //        (holder as MyItemView).cardView.set
-
     }
 
     override fun getItemCount(): Int {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -15,7 +14,7 @@ import com.google.android.material.tabs.TabLayout
 class Fragment_Viewpager : Fragment() {
     private lateinit var mView: View
     private lateinit var mDrawerLayout: DrawerLayout
-    private lateinit var mDrawerToggle: ActionBarDrawerToggle
+//    private lateinit var mDrawerToggle: ActionBarDrawerToggle
     private lateinit var mViewPager: ViewPager
     private lateinit var mTabLayout: TabLayout
     private lateinit var mFragmentAdater: FragmentAdapter
@@ -29,7 +28,7 @@ class Fragment_Viewpager : Fragment() {
         mViewPager = mView.findViewById(R.id.viewpager)
         mTabLayout = mView.findViewById(R.id.tablayout)
         mTabLayout.setupWithViewPager(mViewPager)
-
+        resources.getString(R.string.app_name)
         mViewPager.adapter = mFragmentAdater
         return mView
     }

@@ -9,6 +9,7 @@ import mieubongcity.music.R
 
 class Fragment_Settings : Fragment() {
     private lateinit var mView: View
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

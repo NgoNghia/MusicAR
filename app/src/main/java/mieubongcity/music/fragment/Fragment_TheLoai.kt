@@ -1,6 +1,5 @@
 package mieubongcity.music.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import mieubongcity.music.R
 import mieubongcity.music.acitivity.DanhSachPhatBaiHatActivity
-import mieubongcity.music.acitivity.MainActivity
 import mieubongcity.music.adapter.AdapterTheLoai
 import mieubongcity.music.model.Model_TheLoai
 import mieubongcity.music.util.APIService
@@ -24,7 +22,6 @@ import retrofit2.Response
 
 
 class Fragment_TheLoai : Fragment(), ItemClickTheLoaiListener {
-//    var activity: MainActivity? = null
     private lateinit var mView: View
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterTheLoai :AdapterTheLoai
@@ -50,14 +47,13 @@ class Fragment_TheLoai : Fragment(), ItemClickTheLoaiListener {
                 call: Call<List<Model_TheLoai>>,
                 response: Response<List<Model_TheLoai>>
             ) {
-                mList = response.body() as MutableList<Model_TheLoai>;
-                adapterTheLoai = AdapterTheLoai(activity, mList, this@Fragment_TheLoai)
+                mList = response.body() as MutableList<Model_TheLoai>
+                adapterTheLoai = AdapterTheLoai(mList, this@Fragment_TheLoai)
                 recyclerView.adapter = adapterTheLoai
             }
 
             override fun onFailure(call: Call<List<Model_TheLoai>>, t: Throwable) {
                 Log.e("aaa", t.message.toString())
-                Toast.makeText(activity, t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
