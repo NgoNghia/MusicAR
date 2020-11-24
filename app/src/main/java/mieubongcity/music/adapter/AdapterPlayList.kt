@@ -17,25 +17,10 @@ class AdapterPlayList(
     private var iClick: ItemClickPlayListListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-//    lateinit var mList: MutableList<Model_PlayList>
-//    var mContext: Context
-//    private var iClick: ItemClickPlayListListener? = null
-//
-//    constructor(
-//        mList: MutableList<Model_PlayList>?, mContext: Context,
-//        iClick: ItemClickPlayListListener
-//    ) : super() {
-//        if (mList != null) {
-//            this.mList = mList
-//        }
-//        this.mContext = mContext
-//        this.iClick = iClick
-//    }
-
     inner class MyItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //        var cardView = itemView.findViewById<CardView>(R.id.card_playlist)
-        var image_playlist = itemView.findViewById<ImageView>(R.id.image_playlist)
-        var txt_playlist = itemView.findViewById<TextView>(R.id.txt_playlist)
+        val image_playlist = itemView.findViewById<ImageView>(R.id.image_playlist)
+        val txt_playlist = itemView.findViewById<TextView>(R.id.txt_playlist)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -47,17 +32,17 @@ class AdapterPlayList(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as MyItemView).txt_playlist.setText(mList.get(position).tenPlayList)
+        val music = mList.get(position)
+        (holder as MyItemView).txt_playlist.text = music.tenPlayList
         Picasso.get()
-            .load(mList.get(position).hinhNenPlayList)
+            .load(music.hinhNenPlayList)
             .error(R.drawable.error)
             .placeholder(R.drawable.ic_file_download_black_24dp)
             .fit()
             .into((holder as MyItemView).image_playlist)
         (holder as MyItemView).itemView.setOnClickListener {
             iClick?.let {
-//                var playlist = mList.get(position)
-                it.onClick(mList.get(position))
+                it.onClick(music)
             }
         }
     }

@@ -3,11 +3,15 @@ package mieubongcity.music.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,17 +23,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.squareup.picasso.Picasso
 import mieubongcity.music.R
+import mieubongcity.music.acitivity.MainActivity
 import mieubongcity.music.adapter.AdapterBaiHat
+import mieubongcity.music.broadcast.MediaPlayerBroadcast
+import mieubongcity.music.common.Constant
 import mieubongcity.music.model.Model_BaiHat
+import mieubongcity.music.service.MyMusicSevice
 import mieubongcity.music.util.APIService
 import mieubongcity.music.util.SendDataListSong
 import mieubongcity.music.util.OnClick
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.RuntimeException
+import java.util.ArrayList
 
 class Fragment_BaiHat : Fragment(), OnClick {
     private lateinit var adapterBaiHat: AdapterBaiHat
@@ -37,9 +46,9 @@ class Fragment_BaiHat : Fragment(), OnClick {
     private lateinit var mRecyclerView: RecyclerView
     private var mListSong: MutableList<Model_BaiHat> = mutableListOf()
     private var passData: SendDataListSong? = null
-    var mediaPlayer: MediaPlayer? = null
-//    private lateinit var bottomSheetBehavior: BottomSheetBehavior<RelativeLayout>
-
+    private var viTri = 0
+    var intentService: Intent? = null
+    var mediaPlayerBroadcast: MediaPlayerBroadcast? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +58,8 @@ class Fragment_BaiHat : Fragment(), OnClick {
         initView()
         getDataSong()
         randomListSong()
-
+        eventClick()
+        eventClickNotication()
         return mView
     }
 
@@ -58,6 +68,45 @@ class Fragment_BaiHat : Fragment(), OnClick {
         mRecyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
+    private fun initIntentFilter() {
+        mediaPlayerBroadcast = MediaPlayerBroadcast()
+        var intent = IntentFilter()
+        intent.addAction(Constant.BUTTON_CANCEL)
+        intent.addAction(Constant.BUTTON_NEXT)
+        intent.addAction(Constant.BUTTON_PLAY)
+        intent.addAction(Constant.BUTTON_PREVIOUS)
+        activity?.registerReceiver(mediaPlayerBroadcast, intent)
+    }
+
+    private fun eventClickNotication() {
+        initIntentFilter()
+        mediaPlayerBroadcast?.let {
+            it.setMyBroadcastCall(object : MediaPlayerBroadcast.OnclickNotifyBroadcast {
+                override fun onClickPrevious() {
+
+                }
+
+                override fun onClickPlay() {
+
+                }
+
+                override fun onClickNext() {
+//                    Toast.makeText(activity, "đi tới", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onClickCanel() {
+                    if (MainActivity.mediaPlayer != null) {
+                        if(MainActivity.mediaPlayer!!.isPlaying)
+                            MainActivity!!.mediaPlayer!!.stop()
+                        MainActivity?.mediaPlayer?.release()
+                        MainActivity.mediaPlayer = null
+                        MainActivity.bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        activity?.stopService(intentService)
+                    }
+                }
+            })
+        }
+    }
 
     private fun getDataSong() {
         var iData = APIService.getDataService()
@@ -72,6 +121,7 @@ class Fragment_BaiHat : Fragment(), OnClick {
                     Toast.makeText(activity, "rỗng", Toast.LENGTH_SHORT).show()
                 adapterBaiHat = AdapterBaiHat(mListSong, this@Fragment_BaiHat)
                 mRecyclerView.adapter = adapterBaiHat
+
             }
 
             override fun onFailure(call: Call<List<Model_BaiHat>>, t: Throwable) {
@@ -106,46 +156,120 @@ class Fragment_BaiHat : Fragment(), OnClick {
 
     private fun randomListSong() {
         mView.findViewById<Button>(R.id.btn_random).setOnClickListener {
-            clickItem(-1)
-        }
-    }
-
-    private fun playSong(i: Int) {
-
-        var url: String? = null
-        if (i == 0) {
-            var rd = (0 until mListSong.size).random()
-            Log.d("rd", rd.toString())
-            url = mListSong.get(rd).linkBaiHat
-        } else
-            url = mListSong.get(i).linkBaiHat
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.release()
-        }
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
+            if (!mListSong.isEmpty()) {
+                viTri = (0 until mListSong.size).random()
+                clickItem(viTri)
             }
-            setDataSource(url)
-            prepare()
-            start()
         }
-
     }
 
     override fun clickItem(i: Int) {
-//        playSong(i)
-        passData?.let {
-            it.sendData(i, mListSong)
+        if (i != null) {
+            viTri = i
+            setViewBottomSheet(i)
+        }
+        var bundle = Bundle()
+        if (intentService == null) {
+            intentService = Intent(activity, MyMusicSevice::class.java)
+            bundle.putInt(position, i)
+            bundle.putParcelableArrayList(list, mListSong as ArrayList<out Parcelable>)
+            intentService?.putExtra(data, bundle)
+        } else {
+            bundle.putInt(position, i)
+            bundle.putParcelableArrayList(list, mListSong as ArrayList<out Parcelable>)
+            intentService?.putExtra(data, bundle)
+        }
+        activity!!.startService(intentService)
+    }
+
+    private fun setViewBottomSheet(i: Int) {
+        var music = mListSong.get(i)
+        var tenbaihat = activity?.findViewById<TextView>(R.id.txt_tenbaihat_bottom_sheet)
+        var tencasy = activity?.findViewById<TextView>(R.id.txt_casy_bottom_sheet)
+        var hinhbaihat = activity?.findViewById<ImageView>(R.id.image_hinh_bottom_sheet)
+
+        tenbaihat?.text = music.tenBaiHat
+        tencasy?.text = music.caSy
+        Picasso.get()
+            .load(music.hinhBaiHat)
+            .error(R.drawable.error)
+            .into(hinhbaihat)
+    }
+
+    fun checkPlaySong() {
+        var ic_play_bottom = activity?.findViewById<ImageView>(R.id.image_play_bottom_sheet)
+        var ic_play_bottom_morong =
+            activity?.findViewById<ImageView>(R.id.image_playsong_bottomsheet_morong)
+
+        if (MainActivity.mediaPlayer != null && MainActivity.mediaPlayer?.isPlaying!!) {
+            MainActivity.mediaPlayer!!.pause()
+            ic_play_bottom?.setImageResource(R.drawable.ic_play_arrow_black_24dp)
+            ic_play_bottom_morong?.setImageResource(R.drawable.ic_play_arrow_black_24dp)
+            return
+        }
+
+        if (MainActivity.mediaPlayer != null && MainActivity.mediaPlayer!!.getCurrentPosition() > 1
+            && !MainActivity.mediaPlayer!!.isPlaying
+        ) {
+            MainActivity.mediaPlayer!!.start()
+            ic_play_bottom?.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
+            ic_play_bottom_morong?.setColorFilter(Color.WHITE)
+            ic_play_bottom_morong?.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
         }
     }
 
+    fun eventClick() {
+        var ic_play_bottom = activity?.findViewById<ImageView>(R.id.image_play_bottom_sheet)
+        ic_play_bottom?.setOnClickListener { checkPlaySong() }
+
+        activity?.findViewById<ImageView>(R.id.image_playsong_bottomsheet_morong)
+            ?.setOnClickListener { checkPlaySong() }
+
+        var ic_skip_bottom = activity?.findViewById<ImageView>(R.id.image_skipnext_bottom_sheet)
+        ic_skip_bottom?.setOnClickListener {
+            viTri = viTri?.plus(1)
+            if (viTri == mListSong.size) viTri = 0
+//            changeBottomSheet()
+            clickItem(viTri)
+        }
+
+        var ic_previos_bottom = activity?.findViewById<ImageView>(R.id.image_previous_bottom_sheet)
+        ic_previos_bottom?.setOnClickListener {
+            viTri = viTri?.minus(1)
+            if (viTri == -1) viTri = mListSong.size - 1
+//            changeBottomSheet()
+            clickItem(viTri)
+        }
+
+        activity?.findViewById<ImageView>(R.id.image_previous_bottom_sheet_morong)
+            ?.setOnClickListener {
+                if (MainActivity.mediaPlayer != null && !MainActivity.mediaPlayer!!.isPlaying
+                    && MainActivity.mediaPlayer!!.getCurrentPosition() > 1
+                ) {
+                    activity?.findViewById<ImageView>(R.id.image_playsong_bottomsheet_morong)!!
+                        .setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
+                }
+                viTri = viTri?.minus(1)
+                if (viTri == -1)
+                    viTri = mListSong.size - 1
+//                changeBottomSheetMoRong()
+                clickItem(viTri)
+            }
+
+        activity?.findViewById<ImageView>(R.id.image_skipnext_bottom_sheet_morong)
+            ?.setOnClickListener {
+                if (MainActivity.mediaPlayer != null && !MainActivity.mediaPlayer!!.isPlaying
+                    && MainActivity.mediaPlayer!!.getCurrentPosition() > 1
+                ) {
+                    activity?.findViewById<ImageView>(R.id.image_playsong_bottomsheet_morong)
+                        ?.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
+                }
+                viTri = viTri?.plus(1)
+                if (viTri == mListSong.size) viTri = 0
+//                changeBottomSheetMoRong()
+                clickItem(viTri)
+            }
+    }
 
     override fun clickImageViewMore(i: Int) {
         var dialog = AlertDialog.Builder(activity)
@@ -166,18 +290,25 @@ class Fragment_BaiHat : Fragment(), OnClick {
         dialog.create().show()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is SendDataListSong) {
-            passData = context as SendDataListSong
-        } else {
-            throw RuntimeException(context.toString())
-        }
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        if (context is SendDataListSong) {
+//            passData = context as SendDataListSong
+//        } else {
+//            throw RuntimeException(context.toString())
+//        }
+//    }
 
     override fun onDetach() {
         super.onDetach()
         passData = null
+//        activity?.unregisterReceiver(mediaPlayerBroadcast)
+    }
+
+    companion object {
+        var position: String = "position"
+        var list: String = "list"
+        var data: String = "data"
     }
 
     //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

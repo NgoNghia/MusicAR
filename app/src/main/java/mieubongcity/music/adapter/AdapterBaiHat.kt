@@ -17,16 +17,12 @@ class AdapterBaiHat(
     private var VIEW_ITEM = 1
     private var VIEW_LOADING = 2
 
-    private var isLoading: Boolean = false
-    private var totalView = 0
-    private var lastView = 0
-    private var mVisibleView = 5
 
-    public class LoadingViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class LoadingViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var progressBar = itemView.findViewById<ProgressBar>(R.id.progressbar)
     }
 
-    public class ItemViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemViewHoldel(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var img_baihat = itemView.findViewById<ImageView>(R.id.image_baihat)
         var image_morebahat = itemView.findViewById<ImageView>(R.id.image_morebahat)
         var txt_tenbaihat = itemView.findViewById<TextView>(R.id.txt_tenbaihat)
@@ -37,7 +33,6 @@ class AdapterBaiHat(
         var view: View
         var layoutInflater = LayoutInflater.from(parent?.context)
         when (viewType) {
-
             VIEW_ITEM -> {
                 view = layoutInflater.inflate(R.layout.item_baihat_recyclerview, parent, false);
                 return ItemViewHoldel(view)
@@ -51,14 +46,15 @@ class AdapterBaiHat(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val music = mListBaiHat.get(position)
         when (holder) {
             is LoadingViewHoldel -> ((holder as LoadingViewHoldel)).progressBar.isIndeterminate =
                 true
             is ItemViewHoldel -> {
-                ((holder as ItemViewHoldel)).txt_tenbaihat.setText(mListBaiHat.get(position).tenBaiHat)
-                ((holder as ItemViewHoldel)).txt_tencasy.setText(mListBaiHat.get(position).caSy)
+                ((holder as ItemViewHoldel)).txt_tenbaihat.text = music.tenBaiHat
+                ((holder as ItemViewHoldel)).txt_tencasy.text = music.caSy
                 Picasso.get()
-                    .load(mListBaiHat.get(position).hinhBaiHat)
+                    .load(music.hinhBaiHat)
                     .placeholder(R.drawable.ic_file_download_black_24dp)
                     .error(R.drawable.error)
                     .fit()
@@ -90,6 +86,5 @@ class AdapterBaiHat(
             else -> VIEW_ITEM
         }
         return i
-//        return mList?.size ?: 0
     }
 }
